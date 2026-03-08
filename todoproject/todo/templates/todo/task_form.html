@@ -1,0 +1,80 @@
+{% extends "todo/base.html" %}
+{% block content %}
+
+<div style="max-width: 560px; margin: 3rem auto;">
+    <div class="glass-card">
+        <h2>{% if task %}✎ Edit Task{% else %}+ New Task{% endif %}</h2>
+
+        {% if error %}
+        <div class="alert alert-danger mb-3">
+            ⚠ {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="post" id="task-form">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="form-label">Title</label>
+                <input type="text" name="title" id="id_title" class="form-control" value="{{ task.title }}"
+                    placeholder="What needs to be done?" autofocus>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Description</label>
+                <textarea name="description" id="id_description" class="form-control" rows="4"
+                    placeholder="Any extra details…">{{ task.description }}</textarea>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1">
+                    {% if task %}Save Changes{% else %}Create Task{% endif %}
+                </button>
+                <a href="{% url 'todo:task_list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* form field slide-in stagger */
+    #task-form .mb-4:nth-child(1) {
+        animation: fadeUp 0.4s ease 0.15s both;
+    }
+
+    #task-form .mb-4:nth-child(2) {
+        animation: fadeUp 0.4s ease 0.25s both;
+    }
+
+    #task-form .d-flex {
+        animation: fadeUp 0.4s ease 0.35s both;
+    }
+
+    /* submit button pulse on hover */
+    .btn-primary:hover {
+        box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.3), 0 8px 24px rgba(108, 99, 255, 0.4) !important;
+    }
+</style>
+
+<script>
+    // Typing indicator — show character count on title
+    const titleInput = document.getElementById('id_title');
+    if (titleInput) {
+        const hint = document.createElement('div');
+        hint.style.cssText = 'font-size:0.75rem; color:var(--muted); text-align:right; margin-top:4px; transition: color 0.3s;';
+        titleInput.parentElement.appendChild(hint);
+        const update = () => {
+            const n = titleInput.value.length;
+            hint.textContent = n + ' / 200 chars';
+            hint.style.color = n > 180 ? '#ff6584' : 'var(--muted)';
+        };
+        titleInput.addEventListener('input', update);
+        update();
+    }
+
+    // Submit spin
+    document.getElementById('task-form').addEventListener('submit', function () {
+        const btn = this.querySelector('button[type=submit]');
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving…';
+        btn.disabled = true;
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "todo/base.html" %}
+{% block content %}
+
+<div class="delete-card">
+    <div class="glass-card" style="text-align:center; border-color: rgba(255,77,109,0.3);">
+        <div style="font-size:3rem; margin-bottom:1rem; animation: pulse 1.5s infinite;">🗑️</div>
+        <h2 style="color: #ff8fa3;">Delete Task</h2>
+        <p>Are you sure you want to delete<br>
+            <strong style="color: var(--text);">"{{ task.title }}"</strong>?<br>
+            <span style="font-size:0.85rem;">This action cannot be undone.</span>
+        </p>
+        <form method="post" class="d-flex gap-2 justify-content-center">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger px-4">Yes, Delete</button>
+            <a href="{% url 'todo:task_list' %}" class="btn btn-secondary px-4">Cancel</a>
+        </form>
+    </div>
+</div>
+
+<style>
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.15) rotate(-5deg);
+        }
+    }
+
+    .delete-card .glass-card {
+        animation: fadeUp 0.4s ease both;
+    }
+</style>
+
+{% endblock %}

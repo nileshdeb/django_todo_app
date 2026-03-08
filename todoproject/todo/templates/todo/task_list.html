@@ -1,0 +1,65 @@
+{% extends "todo/base.html" %}
+{% block content %}
+
+<h1>My Tasks</h1>
+
+{% if tasks %}
+<div class="glass-card" style="padding: 0; overflow: hidden;">
+    <table class="table mb-0">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>
+                    <span class="fw-500 {% if task.completed %}task-done{% endif %}">
+                        {{ task.title }}
+                    </span>
+                </td>
+                <td style="max-width:260px; color: var(--muted); font-size:0.9rem;">
+                    {{ task.description|linebreaksbr|truncatechars:80 }}
+                </td>
+                <td>
+                    <form method="post" action="{% url 'todo:task_toggle_complete' task.pk %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="btn btn-sm {% if task.completed %}btn-success{% else %}btn-secondary{% endif %}"
+                            title="Toggle completion">
+                            {% if task.completed %}✔ Done{% else %}○ Pending{% endif %}
+                        </button>
+                    </form>
+                </td>
+                <td style="color: var(--muted); font-size: 0.82rem; white-space: nowrap;">
+                    {{ task.created_at|date:"M d, Y" }}<br>
+                    <span style="font-size:0.75rem;">{{ task.created_at|date:"H:i" }}</span>
+                </td>
+                <td style="white-space: nowrap;">
+                    <a class="btn btn-sm btn-warning me-1" href="{% url 'todo:task_update' task.pk %}">✎ Edit</a>
+                    <form method="post" action="{% url 'todo:task_delete' task.pk %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Delete \'{{ task.title }}\'?')">✕ Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">📋</div>
+    <h4 style="color: var(--text);">No tasks yet!</h4>
+    <p style="color: var(--muted); margin-top: 0.5rem;">Hit <strong>+ Add Task</strong> to get started.</p>
+</div>
+{% endif %}
+
+{% endblock %}
