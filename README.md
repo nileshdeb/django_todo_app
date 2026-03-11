@@ -12,7 +12,7 @@ A full-featured Todo List web application built with Django. This project was de
 - 📋 Clean and intuitive UI built with HTML templates
 - 🗄️ Django ORM for database management
 - 🔧 Django admin panel support
-- ☁️ Deployed on Vercel
+- ☁️ Deployed on Render
 
 ---
 
